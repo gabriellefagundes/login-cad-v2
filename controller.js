@@ -1,50 +1,70 @@
-// Função para validar o acesso.
-
-function acessar(){
+// FUNÇÃO PARA ACESSAR E REDIRECIONAR
+function acessar() {
     let loginEmail = document.getElementById('loginEmail').value;
     let loginSenha = document.getElementById('loginSenha').value;
-
-    if(!loginEmail || !loginSenha){
-        alert("Favor preencher todos os campos.")
-    }else{
-        // alert("Campos preenchidos com sucesso!");    linha criada para teste apenas.
+ 
+    // VERIFICAR SE TODOS OS CAMPOS ESTÃO PREENCHIDOS
+    if (!loginEmail || !loginSenha) {
+        alert('Favor preencher todos os campos');
+    } else {
         window.location.href = 'cadastro.html';
     }
-}
-
-// Função para armazenar os nomes em ARRAY
-var dadosLista = []; //Está em branco porque assim quanto mais coisa eu colocar, cabe normalmente.
-
-function salvarUser(){
+ }
+ 
+ // ARRAY PARA ARMAZENAR USUÁRIOS
+ var dadosLista = [];
+ var indexEditar = -1; // Índice global para armazenar qual usuário está sendo editado
+ 
+ // FUNÇÃO PARA SALVAR USUÁRIO NA LISTA
+ function salvarUser() {
     let nomeUser = document.getElementById('nomeUser').value;
-
-    if(nomeUser){
-        dadosLista.push(nomeUser);
-        //console.log(dadosLista);   Transformei em comentário porque não será mais necessário. Criado para teste.
-        criaLista();
-        document.getElementById('nomeUser').value = ""; //Linha criada para o campo "Nome" ficar em branco após apertar o botão "Salvar".
-    }else{
-        alert("Favor, informe um nome e e-mail para cadastro.");
+    let emailUser = document.getElementById('emailUser').value;
+ 
+    if (nomeUser && emailUser) {
+        if (indexEditar === -1) {
+            // Adiciona novo usuário
+            dadosLista.push({ nome: nomeUser, email: emailUser });
+        } else {
+            // Atualiza usuário existente
+            dadosLista[indexEditar] = { nome: nomeUser, email: emailUser };
+            indexEditar = -1; // Reseta o índice de edição
+        }
+        crialista();
+        document.getElementById("nomeUser").value = "";
+        document.getElementById("emailUser").value = "";
+    } else {
+        alert("Favor informe um nome e E-mail para cadastro");
     }
-}
-// Função para criar uma lista de usuários
-function criaLista(){
-    let tabela = document.getElementById('tabela').innerHTML = "<tr><th>Nome Usuário.</th><th>Ações.</th></tr>"; //Código pego no cadastro.html
-    for(let i=0;i <= (dadosLista.length -1);i++){
-        tabela += "<tr><td>" + dadosLista[i] + "</td><td><button type='button' onclick='editar(parentNode.parentNode.rowIndex)'>Editar</button><button type='button' onclick='excluir(parentNode.parentNode.rowIndex)'>Excluir</button></td></tr>"; //Linha criada para o botão "Editar" e para o botão "Excluir" funcionar.
-        document.getElementById('tabela').innerHTML = tabela;
-    }
-
-}
-
-//Função para editar os nomes das listas.
-function editar(i){
-    document.getElementById('nomeUser').value = dadosLista[(i - 1)];
-    dadosLista.splice(dadosLista[(i - 1)], 1)   //Altera o conteúdo de uma lista, adicionando novos elementos enquanto remove elementos antigos.
-}
-
-// Função para excluir o nome da lista.
-function excluir(i){
-    dadosLista.splice((i - 1), 1); //Remove o nome do ARRAY.
-    document.getElementById('tabela').deleteRow(i); //Deleta o nome da tabela.
-}
+ }
+ 
+ // FUNÇÃO PARA CRIAR LISTA DE USUÁRIOS
+ function crialista() {
+    let tabela = "<tr><th>Nome Usuário</th><th>Email Usuário</th><th>Ações</th></tr>";
+    
+    dadosLista.forEach((user, index) => {
+        tabela += `<tr>
+            <td>${user.nome}</td>
+            <td>${user.email}</td>
+            <td>
+                <button type='button' onclick='editar(${index})'>Editar</button>
+                <button type='button' onclick='excluir(${index})'>Excluir</button>
+            </td>
+        </tr>`;
+    });
+    
+    document.getElementById('tabela').innerHTML = tabela;
+ }
+ 
+ // FUNÇÃO PARA EDITAR USUÁRIO NA LISTA
+ function editar(index) {
+    let user = dadosLista[index];
+    document.getElementById("nomeUser").value = user.nome;
+    document.getElementById("emailUser").value = user.email;
+    indexEditar = index; // Armazena o índice do usuário que está sendo editado
+ }
+ 
+ // FUNÇÃO PARA EXCLUIR USUÁRIO DA LISTA
+ function excluir(index) {
+    dadosLista.splice(index, 1); // Remove o usuário da lista
+    crialista(); // Atualiza a tabela
+ }
