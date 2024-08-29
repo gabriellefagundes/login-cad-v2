@@ -14,30 +14,40 @@ function acessar() {
 // ARRAY PARA ARMAZENAR USUÁRIOS
 var dadosLista = [];
 
-// FUNÇÃO PARA SALVAR USUÁRIO NA LISTA
+// VARIÁVEL GLOBAL PARA ARMAZENAR O ÍNDICE DO USUÁRIO SENDO EDITADO
+var indexEditar = -1;
+
+// FUNÇÃO PARA SALVAR OU EDITAR USUÁRIO NA LISTA
 function salvarUser() {
     let nomeUser = document.getElementById('nomeUser').value;
     let emailUser = document.getElementById('emailUser').value;
 
     if (nomeUser && emailUser) {
-        if (document.getElementById("emailUser").value == " " || document.getElementById("emailUser").value.indexOf('@') == -1 || document.getElementById("emailUser").value.indexOf('.') == -1) {
-            alert("Por favor, Informe um Email válido");
+        if (emailUser === "" || 
+            emailUser.indexOf('@') === -1 || 
+            emailUser.indexOf('.') === -1) {
+            alert("Por favor, informe um email válido");
         } else {
-            // Adiciona novo usuário
-            dadosLista.push({ nome: nomeUser, email: emailUser });
-            // Atualiza usuário existente
+            if (indexEditar === -1) {
+                // Adiciona novo usuário
+                dadosLista.push({ nome: nomeUser, email: emailUser });
+            } else {
+                // Atualiza usuário existente
+                dadosLista[indexEditar] = { nome: nomeUser, email: emailUser };
+                indexEditar = -1; // Reseta o índice após a edição
+            }
             crialista();
             document.getElementById("nomeUser").value = "";
             document.getElementById("emailUser").value = "";
         }
     } else {
-        alert("Favor preencha todos os campos.");
+        alert("Favor preencher todos os campos.");
     }
-
 }
+
 // FUNÇÃO PARA CRIAR LISTA DE USUÁRIOS
 function crialista() {
-    let tabela = "<tr><th>Nome Usuário</th><th>Email Usuário</th><th>Ações</th></tr>";
+    let tabela = "<tr><th>Nome Usuário.</th><th>E-mail.</th><th>Ações.</th></tr>";
 
     dadosLista.forEach((user, index) => {
         tabela += `<tr>
@@ -64,4 +74,5 @@ function editar(index) {
 // FUNÇÃO PARA EXCLUIR USUÁRIO DA LISTA
 function excluir(index) {
     dadosLista.splice(index, 1); // Remove o usuário da lista
+    crialista(); // Atualiza a tabela após a exclusão
 }
